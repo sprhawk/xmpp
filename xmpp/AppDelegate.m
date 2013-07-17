@@ -7,15 +7,30 @@
 //
 
 #import "AppDelegate.h"
+#import "DDLog.h"
+#import "DDTTYLogger.h"
+#import "XMPPCenter.h"
+
+@interface AppDelegate ()
+{
+    XMPPCenter * _center;
+}
+@end
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    [DDLog addLogger:[DDTTYLogger sharedInstance]];
+    
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
+    
+    _center = [[XMPPCenter alloc] init];
+    [_center setupStream];
+    [_center connect];
     return YES;
 }
 
