@@ -9,20 +9,11 @@
 #import "DDLog.h"
 
 #import "XMPPCenter.h"
-#import "XMPPStream.h"
-#import "XMPPReconnect.h"
-#import "XMPPRosterCoreDataStorage.h"
-#import "XMPPRoster.h"
-#import "XMPPvCardCoreDataStorage.h"
-#import "XMPPvCardTemp.h"
-#import "XMPPvCardAvatarModule.h"
-#import "XMPPCapabilitiesCoreDataStorage.h"
-#import "XMPPCapabilities.h"
-#import "XMPPJID.h"
+#import "XMPPFramework.h"
 
 static const int ddLogLevel = LOG_LEVEL_INFO;
 
-@interface XMPPCenter () <XMPPStreamDelegate>
+@interface XMPPCenter () <XMPPStreamDelegate, XMPPPubSubDelegate>
 {
     XMPPStream * _xmppStream;
     XMPPReconnect * _xmppReconnect;
@@ -33,6 +24,10 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     XMPPvCardTempModule * _xmppvCardTempModule;
     XMPPCapabilities * _xmppCapabilities;
     id<XMPPCapabilitiesStorage> _xmppCapabilitiesStorage;
+    
+    XMPPPubSub * _xmppPubSub;
+    
+    XMPPCompression * _xmppCompression;
     
     BOOL _allowSelfSignedCertificates;
 	BOOL _allowSSLHostNameMismatch;
@@ -50,6 +45,11 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 #if !TARGET_IPHONE_SIMULATOR
 //    _xmppStream.enableBackgroundingOnSocket = YES;
 #endif
+    
+    NSString * myJID = @"test2@xingyun.cn";
+    [_xmppStream setMyJID:[XMPPJID jidWithString:myJID]];
+    [_xmppStream setHostName:@"localhost"];
+    [_xmppStream setHostPort:5222];
     
     _xmppReconnect = [[XMPPReconnect alloc] init];
     
@@ -77,6 +77,13 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     
     _allowSelfSignedCertificates = NO;
     _allowSSLHostNameMismatch = NO;
+    
+    _xmppPubSub = [[XMPPPubSub alloc] initWithServiceJID:_xmppStream.myJID];
+    [_xmppPubSub activate:_xmppStream];
+    [_xmppPubSub addDelegate:self delegateQueue:dispatch_get_main_queue()];
+    
+    _xmppCompression = [[XMPPCompression alloc] init];
+    [_xmppCompression activate:_xmppStream];
 }
 
 - (BOOL)connect
@@ -84,8 +91,6 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     if (![_xmppStream isDisconnected]) {
         return YES;
     }
-    NSString * myJID = @"admin@localhost";
-    [_xmppStream setMyJID:[XMPPJID jidWithString:myJID]];
     
     NSError * error = nil;
     if (![_xmppStream connectWithTimeout:XMPPStreamTimeoutNone error:&error]) {
@@ -133,15 +138,52 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 - (void)xmppStreamDidConnect:(XMPPStream *)sender
 {
     NSError * error = nil;
-    if (![_xmppStream authenticateWithPassword:@"admin" error:&error]) {
+    if (![_xmppStream authenticateWithPassword:@"test" error:&error]) {
         DDLogWarn(@"authentication failed:%@" , error);
     }
+    
+    NSArray * a = [_xmppStream supportedCompressionMethods];
+    NSLog(@"%@", a);
 }
+
+- (void)xmppStreamConnectDidTimeout:(XMPPStream *)sender
+{
+    DDLogInfo(@"XMPP connectDidTimeout");
+}
+
 - (void)xmppStreamDidAuthenticate:(XMPPStream *)sender
 {
     DDLogInfo(@"XMPP didAuthenticate");
     [self goOnline];
+    
+    [NSTimer scheduledTimerWithTimeInterval:3.0 target:self selector:@selector(sendMessageTimer:) userInfo:nil repeats:YES];
+//    [_xmppPubSub subscribeToNode:@"1234567"];
 }
+
+- (void)sendMessageTimer:(NSTimer *)t
+{
+//    NSString * JID = @"test1@xingyun.cn";
+//    XMPPMessage * m = [XMPPMessage messageWithType:@"chat" to:[XMPPJID jidWithString:JID]];
+//    [m addBody:@"{\"messageId\":\"13\",\"toid\":\"100200886012\",\"content\":\"13\"}"];
+//    [_xmppStream sendElement:m];
+    
+    NSXMLElement *body = [NSXMLElement elementWithName:@"body"];
+    [body setStringValue:@"hello xmpp"];
+    
+    NSXMLElement *message = [NSXMLElement elementWithName:@"message"];
+    [message addAttributeWithName:@"type" stringValue:@"chat"];
+    [message addAttributeWithName:@"to" stringValue:@"test1@xingyun.cn"];
+    [message addChild:body];
+    
+    [_xmppStream sendElement:message];
+    
+}
+
+- (void)xmppStream:(XMPPStream *)sender didSendMessage:(XMPPMessage *)message
+{
+    DDLogInfo(@"sent message:%@", [message body]);
+}
+
 - (void)xmppStream:(XMPPStream *)sender didNotAuthenticate:(DDXMLElement *)error
 {
     DDLogInfo(@"XMPP didNotAuthenticate");
@@ -155,9 +197,81 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 		                                                         xmppStream:_xmppStream
 		                                               managedObjectContext:[_xmppRosterStorage mainThreadManagedObjectContext]];
 		
-		NSString *body = [[message elementForName:@"body"] stringValue];
+		NSString *body = [message body];
 		NSString *displayName = [user displayName];
         DDLogVerbose(@"body:%@ displayName:%@", body, displayName);
     }
 }
+
+#pragma mark - PubSub
+- (void)xmppPubSub:(XMPPPubSub *)sender didPublishToNode:(NSString *)node withResult:(XMPPIQ *)iq
+{
+    DDLogVerbose(@"%@: %@", THIS_FILE, THIS_METHOD);
+    DDLogVerbose(@"node:%@", node);
+}
+
+- (void)xmppPubSub:(XMPPPubSub *)sender didReceiveMessage:(XMPPMessage *)message
+{
+    DDLogVerbose(@"%@: %@", THIS_FILE, THIS_METHOD);
+    NSString *body = [message body];
+    DDLogVerbose(@"body:%@", body);
+}
+
+- (void)xmppPubSub:(XMPPPubSub *)sender didSubscribeToNode:(NSString *)node withResult:(XMPPIQ *)iq
+{
+    DDLogVerbose(@"%@: %@", THIS_FILE, THIS_METHOD);
+    DDLogVerbose(@"node:%@", node);
+//    [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(sendPubSubMessageTimer:) userInfo:nil repeats:YES];
+}
+
+- (void)xmppPubSub:(XMPPPubSub *)sender didCreateNode:(NSString *)node withResult:(XMPPIQ *)iq
+{
+    [_xmppPubSub subscribeToNode:@"1234567"];
+}
+
+- (void)xmppPubSub:(XMPPPubSub *)sender didDeleteNode:(NSString *)node withResult:(XMPPIQ *)iq
+{
+    DDLogVerbose(@"%@: %@", THIS_FILE, THIS_METHOD);
+    DDLogVerbose(@"node:%@", node);
+}
+
+- (void)xmppPubSub:(XMPPPubSub *)sender didNotCreateNode:(NSString *)node withError:(XMPPIQ *)iq
+{
+    DDLogVerbose(@"%@: %@", THIS_FILE, THIS_METHOD);
+    DDLogVerbose(@"node:%@", node);
+}
+
+- (void)xmppPubSub:(XMPPPubSub *)sender didNotDeleteNode:(NSString *)node withError:(XMPPIQ *)iq
+{
+    DDLogVerbose(@"%@: %@", THIS_FILE, THIS_METHOD);
+    DDLogVerbose(@"node:%@", node);
+}
+
+- (void)sendPubSubMessageTimer:(NSTimer *)timer
+{
+    NSXMLElement * e = [NSXMLElement elementWithName:@"TEST" stringValue:@"xxxxxxxx"];
+    [_xmppPubSub publishToNode:@"1234567" entry:e];
+}
+
+- (void)xmppPubSub:(XMPPPubSub *)sender didUnsubscribeFromNode:(NSString *)node withResult:(XMPPIQ *)iq
+{
+    DDLogVerbose(@"%@: %@", THIS_FILE, THIS_METHOD);
+    DDLogVerbose(@"node:%@", node);
+}
+
+- (void)xmppPubSub:(XMPPPubSub *)sender didNotSubscribeToNode:(NSString *)node withError:(XMPPIQ *)iq
+{
+    DDLogVerbose(@"%@: %@", THIS_FILE, THIS_METHOD);
+    DDLogVerbose(@"node:%@", node);
+    
+    [_xmppPubSub createNode:@"1234567"];
+}
+- (void)xmppPubSub:(XMPPPubSub *)sender didNotPublishToNode:(NSString *)node withError:(XMPPIQ *)iq
+{
+    DDLogVerbose(@"%@: %@", THIS_FILE, THIS_METHOD);
+    DDLogVerbose(@"node:%@", node);
+}
+
+
+
 @end

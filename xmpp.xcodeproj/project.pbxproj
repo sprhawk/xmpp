@@ -147,6 +147,9 @@
 		433049A9179402CC00B7E187 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 433049A8179402CC00B7E187 /* Security.framework */; };
 		433049B11794038E00B7E187 /* libresolv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 433049B01794038E00B7E187 /* libresolv.dylib */; };
 		433049B41794066200B7E187 /* XMPPCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 433049B31794066200B7E187 /* XMPPCenter.m */; };
+		43BF57B917D997BC0039318A /* XMPPFeature.m in Sources */ = {isa = PBXBuildFile; fileRef = 43BF57B817D997BC0039318A /* XMPPFeature.m */; };
+		43BF57CC17D9F29C0039318A /* XMPPCompression.m in Sources */ = {isa = PBXBuildFile; fileRef = 43BF57CB17D9F29C0039318A /* XMPPCompression.m */; };
+		43BF57DC17DACCE50039318A /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 43BF57DB17DACCE40039318A /* libz.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -199,8 +202,8 @@
 		4330480B1793FFDB00B7E187 /* XMPPParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMPPParser.m; sourceTree = "<group>"; };
 		4330480C1793FFDB00B7E187 /* XMPPPresence.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMPPPresence.h; sourceTree = "<group>"; };
 		4330480D1793FFDB00B7E187 /* XMPPPresence.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMPPPresence.m; sourceTree = "<group>"; };
-		4330480E1793FFDB00B7E187 /* XMPPStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMPPStream.h; sourceTree = "<group>"; };
-		4330480F1793FFDB00B7E187 /* XMPPStream.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMPPStream.m; sourceTree = "<group>"; };
+		4330480E1793FFDB00B7E187 /* XMPPStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMPPStream.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		4330480F1793FFDB00B7E187 /* XMPPStream.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMPPStream.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		433048121793FFDB00B7E187 /* XMPPBandwidthMonitor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMPPBandwidthMonitor.h; sourceTree = "<group>"; };
 		433048131793FFDB00B7E187 /* XMPPBandwidthMonitor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMPPBandwidthMonitor.m; sourceTree = "<group>"; };
 		433048151793FFDB00B7E187 /* XMPPCoreDataStorage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMPPCoreDataStorage.h; sourceTree = "<group>"; };
@@ -431,6 +434,12 @@
 		433049B01794038E00B7E187 /* libresolv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libresolv.dylib; path = usr/lib/libresolv.dylib; sourceTree = SDKROOT; };
 		433049B21794066200B7E187 /* XMPPCenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMPPCenter.h; sourceTree = "<group>"; };
 		433049B31794066200B7E187 /* XMPPCenter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMPPCenter.m; sourceTree = "<group>"; };
+		43B4804F17DB25E200C3F1E0 /* XMPPStreamInternal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMPPStreamInternal.h; sourceTree = "<group>"; };
+		43BF57B717D997BC0039318A /* XMPPFeature.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMPPFeature.h; sourceTree = "<group>"; };
+		43BF57B817D997BC0039318A /* XMPPFeature.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMPPFeature.m; sourceTree = "<group>"; };
+		43BF57C017D9A8F20039318A /* XMPPCompression.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMPPCompression.h; sourceTree = "<group>"; };
+		43BF57CB17D9F29C0039318A /* XMPPCompression.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMPPCompression.m; sourceTree = "<group>"; };
+		43BF57DB17DACCE40039318A /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -438,6 +447,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				43BF57DC17DACCE50039318A /* libz.dylib in Frameworks */,
 				433049B11794038E00B7E187 /* libresolv.dylib in Frameworks */,
 				433049A9179402CC00B7E187 /* Security.framework in Frameworks */,
 				433049A51794029D00B7E187 /* SystemConfiguration.framework in Frameworks */,
@@ -476,6 +486,7 @@
 		433047B91793FD6000B7E187 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				43BF57DB17DACCE40039318A /* libz.dylib */,
 				433049B01794038E00B7E187 /* libresolv.dylib */,
 				433049AE1794036800B7E187 /* libsystem_network.dylib */,
 				433049AC179402E700B7E187 /* libsystem_dnssd.dylib */,
@@ -632,6 +643,7 @@
 				4330480C1793FFDB00B7E187 /* XMPPPresence.h */,
 				4330480D1793FFDB00B7E187 /* XMPPPresence.m */,
 				4330480E1793FFDB00B7E187 /* XMPPStream.h */,
+				43B4804F17DB25E200C3F1E0 /* XMPPStreamInternal.h */,
 				4330480F1793FFDB00B7E187 /* XMPPStream.m */,
 			);
 			name = Core;
@@ -663,6 +675,7 @@
 				433048A81793FFDC00B7E187 /* XEP-0106 */,
 				433048AB1793FFDC00B7E187 /* XEP-0115 */,
 				433048B61793FFDC00B7E187 /* XEP-0136 */,
+				43BF57BF17D9A8F10039318A /* XEP-0138 */,
 				433048C21793FFDC00B7E187 /* XEP-0153 */,
 				433048C51793FFDC00B7E187 /* XEP-0172 */,
 				433048CA1793FFDC00B7E187 /* XEP-0184 */,
@@ -1267,6 +1280,7 @@
 			children = (
 				4330499F1794026200B7E187 /* XMPPFramework.h */,
 				433047E11793FFDB00B7E187 /* Authentication */,
+				43BF57B617D997670039318A /* Features */,
 				433047F51793FFDB00B7E187 /* Categories */,
 				433047FC1793FFDB00B7E187 /* Core */,
 				433048101793FFDB00B7E187 /* Extensions */,
@@ -1274,6 +1288,25 @@
 				433048F71793FFDC00B7E187 /* Vendor */,
 			);
 			name = XMPP;
+			sourceTree = "<group>";
+		};
+		43BF57B617D997670039318A /* Features */ = {
+			isa = PBXGroup;
+			children = (
+				43BF57B717D997BC0039318A /* XMPPFeature.h */,
+				43BF57B817D997BC0039318A /* XMPPFeature.m */,
+			);
+			name = Features;
+			path = lib/XMPP/Features;
+			sourceTree = "<group>";
+		};
+		43BF57BF17D9A8F10039318A /* XEP-0138 */ = {
+			isa = PBXGroup;
+			children = (
+				43BF57C017D9A8F20039318A /* XMPPCompression.h */,
+				43BF57CB17D9F29C0039318A /* XMPPCompression.m */,
+			);
+			path = "XEP-0138";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1466,6 +1499,8 @@
 				433049961793FFDC00B7E187 /* DDXMLElement.m in Sources */,
 				433049971793FFDC00B7E187 /* DDXMLNode.m in Sources */,
 				433049B41794066200B7E187 /* XMPPCenter.m in Sources */,
+				43BF57B917D997BC0039318A /* XMPPFeature.m in Sources */,
+				43BF57CC17D9F29C0039318A /* XMPPCompression.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1592,6 +1627,7 @@
 				433047D61793FD6000B7E187 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 
