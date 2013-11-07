@@ -38,7 +38,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 //    _xmppStream.enableBackgroundingOnSocket = YES;
 #endif
     
-    NSString * myJID = @"test2@xingyun.cn";
+    NSString * myJID = @"test2@yang.me";
     [_xmppStream setMyJID:[XMPPJID jidWithString:myJID]];
     [_xmppStream setHostName:@"localhost"];
     [_xmppStream setHostPort:5222];
@@ -60,8 +60,8 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     
     [_xmppReconnect activate:_xmppStream];
     [_xmppRoster activate:_xmppStream];
-    [_xmppvCardTempModule activate:_xmppStream];
-    [_xmppvCardAvatarModule activate:_xmppStream];
+//    [_xmppvCardTempModule activate:_xmppStream];
+//    [_xmppvCardAvatarModule activate:_xmppStream];
     [_xmppCapabilities activate:_xmppStream];
     
     [_xmppStream addDelegate:self delegateQueue:dispatch_get_main_queue()];
@@ -129,13 +129,11 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 }
 - (void)xmppStreamDidConnect:(XMPPStream *)sender
 {
+    DDLogInfo(@"xmppStreamDidConnect");
     NSError * error = nil;
     if (![_xmppStream authenticateWithPassword:@"test" error:&error]) {
         DDLogWarn(@"authentication failed:%@" , error);
     }
-    
-    NSArray * a = [_xmppStream supportedCompressionMethods];
-    NSLog(@"%@", a);
 }
 
 - (void)xmppStreamConnectDidTimeout:(XMPPStream *)sender
@@ -164,7 +162,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     
     NSXMLElement *message = [NSXMLElement elementWithName:@"message"];
     [message addAttributeWithName:@"type" stringValue:@"chat"];
-    [message addAttributeWithName:@"to" stringValue:@"test1@xingyun.cn"];
+    [message addAttributeWithName:@"to" stringValue:@"test1@yang.me"];
     [message addChild:body];
     
     [_xmppStream sendElement:message];
