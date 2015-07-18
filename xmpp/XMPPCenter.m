@@ -2,8 +2,11 @@
 
 #import "XMPPCenter.h"
 #import "XMPPFramework.h"
+#import "DDXML.h"
 
-static const int ddLogLevel = LOG_LEVEL_INFO;
+#define TEST1
+
+static const int ddLogLevel = LOG_LEVEL_VERBOSE;
 
 @interface XMPPCenter () <XMPPStreamDelegate, XMPPPubSubDelegate>
 {
@@ -37,8 +40,12 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 #if !TARGET_IPHONE_SIMULATOR
 //    _xmppStream.enableBackgroundingOnSocket = YES;
 #endif
+#ifdef TEST1
+    NSString * myJID = @"test1@iotpi.io";
+#else
+    NSString * myJID = @"test2@iotpi.io";
+#endif
     
-    NSString * myJID = @"test2@yang.me";
     [_xmppStream setMyJID:[XMPPJID jidWithString:myJID]];
     [_xmppStream setHostName:@"localhost"];
     [_xmppStream setHostPort:5222];
@@ -85,13 +92,13 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     }
     
     NSError * error = nil;
-    if (![_xmppStream connectWithTimeout:XMPPStreamTimeoutNone error:&error]) {
-        UIAlertView * a = [[UIAlertView alloc] initWithTitle:@"error"
-                                                   message:@""
-                                                  delegate:nil
-                                         cancelButtonTitle:@"Ok"
-                                         otherButtonTitles:nil, nil];
-        [a show];
+    if (![_xmppStream connectWithTimeout:5 error:&error]) {
+//        UIAlertView * a = [[UIAlertView alloc] initWithTitle:@"error"
+//                                                   message:@""
+//                                                  delegate:nil
+//                                         cancelButtonTitle:@"Ok"
+//                                         otherButtonTitles:nil, nil];
+//        [a show];
         
         DDLogError(@"Error connecting: %@", error);
         return NO;
@@ -127,6 +134,12 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 {
     DDLogInfo(@"XMPP socket did connect");
 }
+
+- (void)xmppStreamDidDisconnect:(XMPPStream *)sender withError:(NSError *)error
+{
+    DDLogInfo(@"XMPP disconnected: %@", error);
+}
+
 - (void)xmppStreamDidConnect:(XMPPStream *)sender
 {
     DDLogInfo(@"xmppStreamDidConnect");
@@ -146,7 +159,9 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     DDLogInfo(@"XMPP didAuthenticate");
     [self goOnline];
     
-    [NSTimer scheduledTimerWithTimeInterval:3.0 target:self selector:@selector(sendMessageTimer:) userInfo:nil repeats:YES];
+#ifdef TEST1
+    [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(sendMessageTimer:) userInfo:nil repeats:YES];
+#endif
 //    [_xmppPubSub subscribeToNode:@"1234567"];
 }
 
@@ -158,11 +173,19 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 //    [_xmppStream sendElement:m];
     
     NSXMLElement *body = [NSXMLElement elementWithName:@"body"];
-    [body setStringValue:@"hello xmpp"];
+    [body setStringValue:@"hello xmpp"@"hello xmpp"@"hello xmpp"@"hello xmpp"@"hello xmpp"@"hello xmpp"@"hello xmpp"
+     @"hello xmpp"@"hello xmpp"@"hello xmpp"@"hello xmpp"@"hello xmpp"@"hello xmpp"@"hello xmpp"@"hello xmpp"@"hello xmpp"
+     @"hello xmpp"@"hello xmpp"@"hello xmpp"@"hello xmpp"@"hello xmpp"@"hello xmpp"@"hello xmpp"@"hello xmpp"@"hello xmpp"
+     @"hello xmpp"@"hello xmpp"@"hello xmpp"@"hello xmpp"@"hello xmpp"@"hello xmpp"@"hello xmpp"@"hello xmpp"
+     @"hello xmpp"@"hello xmpp"@"hello xmpp"@"hello xmpp"@"hello xmpp"@"hello xmpp"@"hello xmpp"@"hello xmpp"@"hello xmpp"
+     @"hello xmpp"@"hello xmpp"@"hello xmpp"@"hello xmpp"@"hello xmpp"@"hello xmpp"@"hello xmpp"@"hello xmpp"@"hello xmpp"
+     @"hello xmpp"@"hello xmpp"@"hello xmpp"@"hello xmpp"@"hello xmpp"@"hello xmpp"@"hello xmpp"@"hello xmpp"@"hello xmpp"
+     @"hello xmpp"@"hello xmpp"@"hello xmpp"@"hello xmpp"@"hello xmpp"@"hello xmpp"@"hello xmpp"@"hello xmpp"@"hello xmpp"
+     @"hello xmpp"@"hello xmpp"@"hello xmpp"@"hello xmpp"@"hello xmpp"@"hello xmpp"@"hello xmpp"@"hello xmpp"@"hello xmpp"];
     
     NSXMLElement *message = [NSXMLElement elementWithName:@"message"];
     [message addAttributeWithName:@"type" stringValue:@"chat"];
-    [message addAttributeWithName:@"to" stringValue:@"test1@yang.me"];
+    [message addAttributeWithName:@"to" stringValue:@"test2@iotpi.io"];
     [message addChild:body];
     
     [_xmppStream sendElement:message];
